@@ -1,20 +1,20 @@
 const request = require('request');
+
 const geocodeAddress = (address, callback) => {
-    const encodeAddress = encodeURIComponent(address);
+    const encodedAddress = encodeURIComponent(address);
     request({
-        url: `http://maps.googleapis.com/maps/api/geocode/json?address=${encodeAddress}`,
+        url: `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}`,
         json: true
-    }, (err, response, body) => {
-        // console.log(JSON.stringify(body,undefined,2));
-        if (err) {
-            callback('Unable to connect to GG server !');
-        } else if (body.status === 'ZERO_RESULTS' || body.status === 'OVER_QUERY_LIMIT') {
-            callback('Unable to find address !');
+    }, (error, response, body) => {
+        if (error) {
+            callback('Unable to connect to Google servers.');
+        } else if (body.status === 'ZERO_RESULTS') {
+            callback('Unable to find that address.');
         } else if (body.status === 'OK') {
             callback(undefined, {
                 address: body.results[0].formatted_address,
                 latitude: body.results[0].geometry.location.lat,
-                longtitude : body.results[0].geometry.location.lng
+                longitude: body.results[0].geometry.location.lng
             });
         }
     });
